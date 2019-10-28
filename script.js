@@ -331,7 +331,7 @@ function clearSpace() {
 }
 // FUnction to load the monster
 function loadMonster() {
-  monLoad = nameLoad.value()
-  img = createImg(monLoad + ".jpg")
+  monLoad = nameLoad.value() //Load file with name in the text box
+  img = createImg('images/'+ monLoad + ".jpg") //Loads images from a folder named files
   img.position(750, height / 6)
 }
