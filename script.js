@@ -1,17 +1,23 @@
+//Load MobileNets
+
 const classAnalyzer = ml5.featureExtractor('MobileNet', classAnalyzerlLoaded);
 const orderAnalyzer = ml5.featureExtractor('MobileNet', orderAnalyzerLoaded);
 const vulAnalyzer = ml5.featureExtractor('MobileNet', vulAnalyzerLoaded);
 const dietAnalyzer = ml5.featureExtractor('MobileNet', dietAnalyzerLoaded);
 const alignAnalyzer = ml5.featureExtractor('MobileNet', alignAnalyzerLoaded);
 const aggrAnalyzer = ml5.featureExtractor('MobileNet', aggrAnalyzerLoaded);
+
 //Regression
+
 const classification = classAnalyzer.regression();
 const order = orderAnalyzer.regression();
 const vulnerabilities = vulAnalyzer.regression();
 const diet = dietAnalyzer.regression();
 const alignment = alignAnalyzer.regression();
 const aggression = aggrAnalyzer.regression();
-//Load MobileNets
+
+//Load MobileNet Callbacks
+
 function classAnalyzerlLoaded() {
   classification.load('1classification/model.json', classModelLoaded)
   console.log('Class Analyzer Loaded!');
@@ -41,7 +47,9 @@ function aggrAnalyzerLoaded() {
   aggression.load('6aggression/model.json', aggrModelLoaded)
   console.log('Aggression Analyzer Loaded!');
 }
+
 //Load custom Models
+
 function classModelLoaded() {
   console.log('Class Model is ready!!!');
 
@@ -73,7 +81,7 @@ function aggrModelLoaded() {
 
 }
 
-
+// blank imagge variable
 let img;
 // Drawing Space
 let mX;
@@ -93,28 +101,31 @@ let savImg;
 let genMon;
 let loadMon;
 //
-let indicator = false;
+let indicator = false;// indicates whether or not all the models are loaded
 
 
 function setup() {
   createCanvas(1695, 824);
-  //img= createImg(monName+".jpg")
-  //Input for monster Name
 
+  //Input for monster Name
   nameIn = createInput();
   nameIn.position(250, 115);
-  //
+
+  //Loads this file as an image
   nameLoad = createInput();
   nameLoad.position(950, 115)
+
   //Button to Save image & run Classifier
   savImg = createButton('Save Image');
   savImg.position(440, 710);
   savImg.mousePressed(saveimg);
+
   //Button to Load image
   loadMon = createButton('Load Monster')
   loadMon.position(1050, 710)
   loadMon.mousePressed(loadMonster);
-  //
+
+  //Button that actually classifies the images
   genMon = createButton('Generate Monster Traits');
   genMon.position(850, 710);
   genMon.mousePressed(classifyImg);
@@ -122,8 +133,10 @@ function setup() {
   clBut = createButton('Clear');
   clBut.position(380, 710);
   clBut.mousePressed(clearSpace);
+
   //
   background(220);
+  // Drawing space
   rect(width / 40, height / 6, 550, 550);
   strokeWeight(2);
   line((width / 2) - 150, 0, (width / 2) - 150, height)
@@ -134,7 +147,7 @@ function setup() {
 function draw() {
   textSize(20)
     text('Name your Monster!',245,100)
-  if (indicator == true) {
+  if (indicator == true) { //if the indicator is false, the models are not done loading. Subsequently, the labels will be Red instead of Green
     // Labels
     fill(0, 179, 0)
     text('Class:', 1450, 140)
@@ -144,7 +157,7 @@ function draw() {
     text('Alignment:', 1450, 460)
     text('Aggression:', 1450, 540)
     textSize(28)
-    text('Models Ready', 1000, 50)
+    text('Models are Ready', 1000, 50)
   } else {
     fill(236, 58, 58)
     text('Class', 1450, 140)
@@ -156,18 +169,18 @@ function draw() {
 
   }
 
-  //
+  // Variables for the drawing Space
+
   mX = mouseX;
   mY = mouseY;
   canvasX1 = width / 40;
   canvasX2 = (width / 40) + 547;
   canvasY1 = height / 6;
   canvasY2 = (height / 6) + 547;
-
-
   noStroke();
   fill(255);
 
+// While the mouse is in the square and the mouse is being pressed, the "Pen" will be able to draw
   if (mX > canvasX1 + 3) {
     if (mX < canvasX2) {
       if (mY > canvasY1 + 3) {
@@ -191,17 +204,19 @@ function saveimg() {
   monName = nameIn.value();
   save(monsterDrawing, monName + ".jpg");
   console.log('Image Saved')
-  //img = createImg(monName+".jpg");
-
 }
 
+//Function that makes a prediction of the image that has been loaded
 function classifyImg() {
-  // Make a prediction with a selected image
+  fill(220)
+  rect(1400,0,width,height)
+  fill(0)
   textSize(15)
+
   classification.predict(img, function(err, results) {
-    let resRound = round(results.value)
+    let resRound = round(results.value) //Regression value is rounded off
     console.log(results);
-    switch (resRound) {
+    switch (resRound) { // switch, case conditional for different values
       case 1:
         cl = "Beast";
         break;
@@ -217,8 +232,9 @@ function classifyImg() {
       case 5:
         cl = "Undead";
     }
-    text(cl, 1500, 180)
+    text(cl, 1500, 180) // Text is printed on screen
   });
+
   order.predict(img, function(err, results) {
     let resRound = round(results.value)
     console.log(results);
@@ -240,6 +256,7 @@ function classifyImg() {
     }
     text(or, 1500, 260)
   });
+
   vulnerabilities.predict(img, function(err, results) {
     let resRound = round(results.value)
     console.log(results);
@@ -261,6 +278,7 @@ function classifyImg() {
     }
     text(vl, 1500, 340)
   });
+
   diet.predict(img, function(err, results) {
     let resRound = round(results.value)
     console.log(results);
@@ -279,6 +297,7 @@ function classifyImg() {
     }
     text(dt, 1500, 420)
   });
+
   alignment.predict(img, function(err, results) {
     let resRound = round(results.value)
     console.log(results);
@@ -295,6 +314,7 @@ function classifyImg() {
     }
     text(ali, 1500, 500)
   });
+
   aggression.predict(img, function(err, results) {
     let resRound = round(results.value)
     console.log(results);
@@ -302,13 +322,14 @@ function classifyImg() {
   });
 
 }
+
 // Function to Clear Canvas
 function clearSpace() {
   fill(255)
   rect(width / 40, height / 6, 550, 550)
 
 }
-
+// FUnction to load the monster
 function loadMonster() {
   monLoad = nameLoad.value()
   img = createImg(monLoad + ".jpg")

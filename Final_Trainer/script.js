@@ -1,12 +1,13 @@
-// Initialize the Image Classifier method with MobileNet
-// Image analyzer
+//Load MobileNet
+
 const classAnalyzer = ml5.featureExtractor('MobileNet', modelLoaded);
 const orderAnalyzer = ml5.featureExtractor('MobileNet', modelLoaded);
 const vulAnalyzer = ml5.featureExtractor('MobileNet', modelLoaded);
 const dietAnalyzer = ml5.featureExtractor('MobileNet', modelLoaded);
 const alignAnalyzer = ml5.featureExtractor('MobileNet', modelLoaded);
 const aggrAnalyzer = ml5.featureExtractor('MobileNet', modelLoaded);
-//Regression
+//Regressions
+
 const classification = classAnalyzer.regression();
 const order = orderAnalyzer.regression();
 const vulnerabilities = vulAnalyzer.regression();
@@ -16,7 +17,9 @@ const aggression = aggrAnalyzer.regression();
 //
 let trainBut; //Button to train classifier
 let saveBut; // Button to save json
-//Image vars
+//Variables for the loaded images
+
+//
 let banshee1
 let banshee2
 let banshee3
@@ -89,7 +92,7 @@ let werewolf6
 //
 let predictImg
 
-// When the model is loaded
+// When the model is loaded, add all the images and assign a number to them
 function modelLoaded() {
   //
   classification.addImage(banshee1,3)
@@ -177,7 +180,7 @@ function modelLoaded() {
 
 function setup() {
   createCanvas(1695, 824);
-
+  // Button to train all the images
   trainBut = createButton('Train');
   trainBut.position(440, 710);
   trainBut.mousePressed(trainClassifier);
@@ -191,7 +194,7 @@ function setup() {
   strokeWeight(2);
   line((width / 2) - 150, 0, (width / 2) - 150, height)
   //
-  //Image vars
+  //Image variables are given images
   banshee1= createImg('Banshee1.jpg')
   banshee2= createImg('Banshee2.jpg')
   banshee3= createImg('Banshee3.jpg')
@@ -261,14 +264,15 @@ function setup() {
   werewolf4= createImg('Werewolf4.jpg')
   werewolf5= createImg('Werewolf5.jpg')
   werewolf6= createImg('Werewolf6.jpg')
-
+  // Test image to see if the classifiers work
+    //spoiler: it does
   predictimg=createImg('Test 1.jpg')
 };
 
 function draw() {
 
 }
-// Function to save the image
+// Function to train all the models as well as test to see if it is working and shows the desired results
 function trainClassifier() {
 
   classification.train(function(lossValue) {
@@ -281,7 +285,9 @@ console.log(result);
       console.log("Class Loss=" + lossValue);
     }
   });
+
   //
+
   order.train(function(lossValue) {
     if (lossValue == null) {
       console.log('Order Training Complete');
@@ -292,7 +298,9 @@ console.log(result);
       console.log("Order Loss=" + lossValue);
     }
   });
+
   //
+
   vulnerabilities.train(function(lossValue) {
     if (lossValue == null) {
       console.log('Vulnerabilities Training Complete');
@@ -303,7 +311,9 @@ console.log(result);
       console.log("Vulnerabilities Loss=" + lossValue);
     }
   });
+
   //
+
   diet.train(function(lossValue) {
     if (lossValue == null) {
       console.log('Diet Training Complete');
@@ -314,7 +324,9 @@ console.log(result);
       console.log("Diet Loss=" + lossValue);
     }
   });
+
   //
+
   alignment.train(function(lossValue) {
     if (lossValue == null) {
       console.log('Alignment Training Complete');
@@ -325,7 +337,9 @@ console.log(result);
       console.log("Alignment Loss=" + lossValue);
     }
   });
+
   //
+
   aggression.train(function(lossValue) {
     if (lossValue == null) {
       console.log('Agression Training Complete');
@@ -337,7 +351,7 @@ console.log(result);
     }
   });
 }
-
+// Saves all the classifiers as JSON files
 function saveClassifier() {
   classification.save();
   order.save();
